@@ -1,0 +1,127 @@
+<ImportExportXml version="9.2.24054.208" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SolutionManifest>
+    <UniqueName>SIRH_MyRecruitment</UniqueName>
+    <LocalizedNames>
+      <LocalizedName description="SIRH_MyRecruitment" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions />
+    <Version>1.0.0.34</Version>
+    <Managed>0</Managed>
+    <Publisher>
+      <UniqueName>PwC</UniqueName>
+      <LocalizedNames>
+        <LocalizedName description="PwC" languagecode="1033" />
+      </LocalizedNames>
+      <Descriptions />
+      <EMailAddress xsi:nil="true"></EMailAddress>
+      <SupportingWebsiteUrl xsi:nil="true"></SupportingWebsiteUrl>
+      <CustomizationPrefix>pwc</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>89644</CustomizationOptionValuePrefix>
+      <Addresses>
+        <Address>
+          <AddressNumber>1</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+        <Address>
+          <AddressNumber>2</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+      </Addresses>
+    </Publisher>
+    <RootComponents>
+      <RootComponent type="1" schemaName="new_sirh_candidature" behavior="0" />
+      <RootComponent type="1" schemaName="new_sirh_commentaire" behavior="0" />
+      <RootComponent type="1" schemaName="new_sirh_demande" behavior="0" />
+      <RootComponent type="1" schemaName="new_sirh_entretien" behavior="0" />
+      <RootComponent type="1" schemaName="new_sirh_evaluation" behavior="0" />
+      <RootComponent type="1" schemaName="pwc_sirh_candidature1" behavior="0" />
+      <RootComponent type="1" schemaName="systemuser" behavior="1" />
+      <RootComponent type="9" schemaName="new_canal" behavior="0" />
+      <RootComponent type="9" schemaName="new_diplomes" behavior="0" />
+      <RootComponent type="9" schemaName="new_los" behavior="0" />
+      <RootComponent type="9" schemaName="new_niveauetude" behavior="0" />
+      <RootComponent type="9" schemaName="new_practices" behavior="0" />
+      <RootComponent type="9" schemaName="new_seniorites" behavior="0" />
+      <RootComponent type="9" schemaName="new_statutsdemande" behavior="0" />
+      <RootComponent type="9" schemaName="new_typesentretiens" behavior="0" />
+      <RootComponent type="9" schemaName="new_universites" behavior="0" />
+      <RootComponent type="9" schemaName="pwc_resultatfinalentretien" behavior="0" />
+      <RootComponent type="29" id="{0e916bd8-fd8c-ee11-8179-00224872417c}" behavior="0" />
+      <RootComponent type="29" id="{0f9352b5-e709-ee11-8f6e-000d3adf7a52}" behavior="0" />
+      <RootComponent type="29" id="{16401b0c-8f0b-ef11-9f89-6045bd0a5236}" behavior="0" />
+      <RootComponent type="29" id="{2fec54a8-5e0c-ee11-8f6e-000d3adf7a52}" behavior="0" />
+      <RootComponent type="29" id="{42aaa4de-c3b3-ee11-a569-000d3a959e8d}" behavior="0" />
+      <RootComponent type="29" id="{60a55cd8-0499-ee11-be37-00224872417c}" behavior="0" />
+      <RootComponent type="29" id="{f1aef9b1-fd08-ee11-8f6e-000d3adf7a52}" behavior="0" />
+      <RootComponent type="29" id="{f9c400ce-8693-ee11-be37-000d3a95b14a}" behavior="0" />
+      <RootComponent type="300" schemaName="new_progressindicator_9de25" behavior="0" />
+      <RootComponent type="300" schemaName="pwc_myrecruitment_13f11" behavior="0" />
+    </RootComponents>
+    <MissingDependencies>
+      <MissingDependency>
+        <Required type="1" schemaName="aaduser" displayName="Microsoft Entra ID" solution="MetadataExtension (1.0.2.102)" />
+        <Dependent type="300" schemaName="pwc_myrecruitment_13f11" displayName="MyRecruitment" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="msdyn_virtualtablecolumncandidate" displayName="Virtual Table Column Candidate" solution="msft_ConnectorProvider (9.0.0.1618)">
+          <package>msft_ConnectorProviderAnchor (9.0.0.1618)</package>
+        </Required>
+        <Dependent type="300" schemaName="pwc_myrecruitment_13f11" displayName="MyRecruitment" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="aib_currentcommondataserviceconnection" solution="Documentautomationbasekit (202109.1.0303.0)" id.connectionreferencelogicalname="aib_currentcommondataserviceconnection">
+          <package>Documentautomationbasekit (202109.1.0303.0)</package>
+        </Required>
+        <Dependent type="29" displayName="SIRH AI Builder integration" id="{16401b0c-8f0b-ef11-9f89-6045bd0a5236}" />
+      </MissingDependency>
+    </MissingDependencies>
+  </SolutionManifest>
+</ImportExportXml>
