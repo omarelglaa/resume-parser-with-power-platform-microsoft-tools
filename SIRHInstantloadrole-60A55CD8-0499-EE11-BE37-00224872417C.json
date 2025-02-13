@@ -1,0 +1,127 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "pwc_sharedcommondataserviceforapps_ed096"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "b9d01310-9fa5-404d-879d-18c3ec40e088"
+          },
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "role",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "userId",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "List_rows": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "8dcff41a-1f27-4503-b9bd-fac3651175ab"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "roles",
+              "$select": "name",
+              "fetchXml": "<fetch>\n  <entity name=\"role\">\n    <attribute name=\"name\" />\n    <filter>\n      <condition attribute=\"name\" operator=\"like\" value=\"%@{triggerBody()['text']}%\" />\n    </filter>\n    <link-entity name=\"teamroles\" from=\"roleid\" to=\"roleid\" intersect=\"true\">\n      <link-entity name=\"team\" from=\"teamid\" to=\"teamid\" alias=\"t\" intersect=\"true\">\n        <attribute name=\"businessunitid\" />\n        <attribute name=\"name\" />\n        <link-entity name=\"teammembership\" from=\"teamid\" to=\"teamid\" intersect=\"true\">\n          <link-entity name=\"systemuser\" from=\"systemuserid\" to=\"systemuserid\" alias=\"u\" intersect=\"true\">\n            <attribute name=\"businessunitid\" />\n            <attribute name=\"fullname\" />\n            <filter>\n              <condition attribute=\"systemuserid\" operator=\"eq\" value=\"@{triggerBody()['text_1']}\" />\n            </filter>\n          </link-entity>\n        </link-entity>\n      </link-entity>\n    </link-entity>\n  </entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Respond_to_a_PowerApp_or_flow": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "feb61055-34e3-4c7a-86bc-6460b66c084d"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "isadmin": "@if(greater(outputs('Compose'), 0), true, false)"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "isadmin": {
+                  "title": "IsAdmin",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "Compose": {
+          "runAfter": {
+            "List_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7958e7a5-4c97-4235-b136-d4c71c049e15"
+          },
+          "type": "Compose",
+          "inputs": "@length(outputs('List_rows')?['body/value'])"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

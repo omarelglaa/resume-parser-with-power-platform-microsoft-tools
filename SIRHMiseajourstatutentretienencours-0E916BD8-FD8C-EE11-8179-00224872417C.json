@@ -1,0 +1,101 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "pwc_sharedcommondataserviceforapps_4c795"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "recurrence": {
+            "frequency": "Hour",
+            "interval": 1,
+            "startTime": "2023-11-27T09:00:00Z"
+          },
+          "metadata": {
+            "operationMetadataId": "33336afd-db1b-4b1a-a834-b14b46d120d3"
+          },
+          "type": "Recurrence"
+        }
+      },
+      "actions": {
+        "List_rows_entretien": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "5af89fd1-1901-4a1f-8e4f-83e4b300ea4c"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_sirh_entretiens",
+              "$select": "new_dateheure,new_sirh_entretienid",
+              "$filter": "(Microsoft.Dynamics.CRM.NextXHours(PropertyName='new_dateheure',PropertyValue=1) and statuscode eq 1)"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@outputs('List_rows_entretien')?['body/value']",
+          "actions": {
+            "Update_a_row": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "fd0e29c3-4813-48df-bcb6-aed570687377"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_sirh_entretiens",
+                  "recordId": "@items('Apply_to_each')?['new_sirh_entretienid']",
+                  "item/statecode": 0,
+                  "item/statuscode": 100000002
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "List_rows_entretien": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "30bd831a-af82-4c6d-b875-859d07a29644"
+          },
+          "type": "Foreach"
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

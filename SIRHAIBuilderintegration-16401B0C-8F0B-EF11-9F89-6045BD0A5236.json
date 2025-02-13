@@ -1,0 +1,342 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "aib_currentcommondataserviceconnection"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "Lorsqu’une_ligne_est_ajoutée,_modifiée_ou_supprimée": {
+          "metadata": {
+            "operationMetadataId": "513f8e81-947b-4ffc-983b-a5bd43aec923"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "new_sirh_candidature",
+              "subscriptionRequest/scope": 4
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Télécharger_un_fichier_ou_une_image": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "5f514acc-e7c8-46a0-a4f9-b8667e373a96"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetEntityFileImageFieldContent",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_sirh_candidatures",
+              "recordId": "@triggerOutputs()?['body/new_sirh_candidatureid']",
+              "fileImageFieldName": "new_cv"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Reconnaître_le_texte_dans_une_image_ou_un_document_PDF": {
+          "runAfter": {
+            "Télécharger_un_fichier_ou_une_image": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "99cd82af-881b-4882-8b77-19927867091c",
+            "flowSystemMetadata": {
+              "portalOperationId": "aibuilderpredict_textrecognition",
+              "portalOperationGroup": "aibuilder",
+              "portalOperationApiDisplayNameOverride": "AI Builder",
+              "portalOperationIconOverride": "https://content.powerapps.com/resource/makerx/static/pauto/images/designeroperations/aiBuilderNew.51dbdb6b.png",
+              "portalOperationBrandColorOverride": "#0A76C4",
+              "portalOperationApiTierOverride": "Standard"
+            }
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "aibuilderpredict_textrecognition",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "item/requestv2/base64Encoded": "@body('Télécharger_un_fichier_ou_une_image')"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialiser_la_variable": {
+          "runAfter": {
+            "Reconnaître_le_texte_dans_une_image_ou_un_document_PDF": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ba55d2df-9935-446e-a4d5-aa0e6f1c189e"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "extracted text",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "Appliquer_à_chacun": {
+          "foreach": "@outputs('Reconnaître_le_texte_dans_une_image_ou_un_document_PDF')?['body/responsev2/predictionOutput/results']",
+          "actions": {
+            "Appliquer_à_chacun_2": {
+              "foreach": "@items('Appliquer_à_chacun')?['lines']",
+              "actions": {
+                "Ajouter_à_la_variable_de_chaîne": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "73e9f258-eb9b-49ce-bb94-e4268cedb32a"
+                  },
+                  "type": "AppendToStringVariable",
+                  "inputs": {
+                    "name": "extracted text",
+                    "value": "@items('Appliquer_à_chacun_2')?['text']"
+                  }
+                }
+              },
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "570e6f91-c05c-471b-9b7d-76fde2cd5e11"
+              },
+              "type": "Foreach"
+            }
+          },
+          "runAfter": {
+            "Initialiser_la_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "76e02dd7-cd31-4548-ae48-857ab86a62d2"
+          },
+          "type": "Foreach"
+        },
+        "Créer_du_texte_avec_GPT_à_l’aide_d’une_invite": {
+          "runAfter": {
+            "Appliquer_à_chacun": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "95d35cc8-c6fd-4ea6-acbe-2de2d8dd5cac",
+            "flowSystemMetadata": {
+              "portalOperationId": "aibuilderpredict_customprompt",
+              "portalOperationGroup": "aibuilder",
+              "portalOperationApiDisplayNameOverride": "AI Builder",
+              "portalOperationIconOverride": "https://content.powerapps.com/resource/makerx/static/pauto/images/designeroperations/aiBuilderNew.51dbdb6b.png",
+              "portalOperationBrandColorOverride": "#0A76C4",
+              "portalOperationApiTierOverride": "Standard"
+            }
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "aibuilderpredict_customprompt",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "recordId": "42c1e470-53f8-4989-8263-fff9bb96bcf9",
+              "item/requestv2/input_20text": "@variables('extracted text')",
+              "item/requestv2/entityToBeExtracted": "Nom(Name Last Name), Spécialité d'étude, Formation (Education), Email(Mail), Première expérience , Compétences (Skills), Expériences (Work experience), Téléphone (Phone), Profil( About me)"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Analyser_JSON": {
+          "runAfter": {
+            "Créer_du_texte_avec_GPT_à_l’aide_d’une_invite": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5429edc0-63d7-4a5a-9dc9-730bf6b73763"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@outputs('Créer_du_texte_avec_GPT_à_l’aide_d’une_invite')?['body/responsev2/predictionOutput/text']",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "extracted_data": {
+                  "type": "object",
+                  "properties": {
+                    "Nom": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "Spécialité d'étude": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "Formation": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "Email": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "Première expérience": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "Compétences": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "Expériences": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "Téléphone": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "Profil": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Mettre_à_jour_une_ligne": {
+          "runAfter": {
+            "Analyser_JSON": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a9f95c0c-6c3f-47d8-b45c-2b2d61036417"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "UpdateRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_sirh_candidatures",
+              "recordId": "@triggerOutputs()?['body/new_sirh_candidatureid']",
+              "item/cr7c7_competences": "@body('Analyser_JSON')?['extracted_data']?['Compétences']?['value']",
+              "item/pwc_education": "@body('Analyser_JSON')?['extracted_data']?['Formation']?['value']",
+              "item/new_email": "@body('Analyser_JSON')?['extracted_data']?['Email']?['value']",
+              "item/cr7c7_experiences": "@body('Analyser_JSON')?['extracted_data']?['Expériences']?['value']",
+              "item/new_nomprenom": "  @{body('Analyser_JSON')?['extracted_data']?['Nom']?['value']}",
+              "item/cr7c7_telephone": "@body('Analyser_JSON')?['extracted_data']?['Téléphone']?['value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}
